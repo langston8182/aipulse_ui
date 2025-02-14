@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+    commands:
+      - echo "Installation des dépendances..."
+      - npm install
+  build:
+    commands:
+      - echo "Construction de l'application..."
+      - npm run build
+  post_build:
+    commands:
+      - echo "Déploiement sur S3..."
+      - aws s3 rm s3://ai-pulse-news.com --recursive
+      - aws s3 cp ./dist s3://ai-pulse-news.com --recursive

@@ -1,0 +1,48 @@
+export interface Article {
+  _id: string;
+  title: string;
+  summary: string;
+  content: string;
+  imageUrl: string;
+  category: string;
+  publishedAt: string;
+  author: string;
+  readTime: number;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ArticleFormData {
+  title: string;
+  summary: string;
+  content: string;
+  imageUrl: string;
+  category: string;
+  author: string;
+  readTime: number;
+}
+
+export interface Parameter {
+  name: string;
+  value: string;
+}
+
+export interface EmailRequest {
+  to: string;
+  subject: string;
+  htmlBody: string;
+  textBody: string;
+  bccAddresses?: string[];
+}
+
+export interface S3Image {
+  id: string;
+  fileName: string;
+  url: string;
+  lastModified?: string;
+  size?: number;
+}
