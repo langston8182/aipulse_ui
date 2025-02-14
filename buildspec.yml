@@ -14,5 +14,5 @@ phases:
   post_build:
     commands:
       - echo "Déploiement sur S3..."
-      - aws s3 rm s3://ai-pulse-news.com --recursive
-      - aws s3 cp ./dist s3://ai-pulse-news.com --recursive
+      - aws s3 rm s3://www.ai-pulse-news.com --recursive
+      - aws s3 cp ./dist s3://www.ai-pulse-news.com --recursive
