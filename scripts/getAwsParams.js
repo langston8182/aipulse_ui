@@ -1,10 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 
 // Load environment variables
-dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

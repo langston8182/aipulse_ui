@@ -1,7 +1,7 @@
 import type { Article, ArticleFormData } from '../types';
 import { sendNewArticleNotification } from './email';
 
-const API_BASE_URL = 'https://aipulse-api.cyrilmarchive.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export async function getArticles(): Promise<Article[]> {
   try {

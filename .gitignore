@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .bolt/*
-.env
 .stackblitz/*
 package-lock.json
 src/config.json

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://aipulse-api.cyrilmarchive.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const AWS_LOGIN_URL = 'https://auth.cyrilmarchive.com/login?client_id=6adlt0qa98ki88abf5bkt8oone&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fwww.ai-pulse-news.com%2Fauth%2Fcallback';
 
 interface UserInfo {
@@ -42,7 +42,6 @@ export async function getUserInfo(): Promise<UserInfo | null> {
       credentials: 'include',
       method: 'POST',
     });
-    console.log('response : ', response)
     if (!response.ok) {
       throw new Error('Failed to get user info');
     }

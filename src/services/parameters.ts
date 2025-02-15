@@ -1,6 +1,6 @@
 import type { Parameter } from '../types';
 
-const API_BASE_URL = 'https://aipulse-api.cyrilmarchive.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export async function getParameters(): Promise<Parameter[]> {
   try {

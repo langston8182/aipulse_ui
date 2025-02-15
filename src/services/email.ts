@@ -2,7 +2,7 @@ import type { Article, EmailRequest } from '../types';
 import { getNewsletterSubscribers } from './newsletter';
 import config from '../config.json';
 
-const API_BASE_URL = 'https://aipulse-api.cyrilmarchive.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export async function sendEmail(emailRequest: EmailRequest): Promise<void> {
   try {

@@ -1,9 +1,8 @@
 import type { EmailRequest } from '../types';
 import { generateToken } from '../utils/crypto';
 import { sendEmail } from './email';
-import config from '../config.json';
 
-const API_BASE_URL = 'https://aipulse-api.cyrilmarchive.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export async function subscribeToNewsletter(email: string): Promise<void> {
   try {
