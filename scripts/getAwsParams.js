@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 
 // Load environment variables
 
+const API_BASE_URL = process.env.API_URL
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuration structure we want to generate
@@ -89,7 +90,7 @@ async function main() {
     // Only try to fetch from API if credentials are available
       console.log('Fetching parameters from API...');
       try {
-        const response = await fetch('https://aipulse-api.cyrilmarchive.com/admin/parameters', {
+        const response = await fetch(`${API_BASE_URL}/admin/parameters`, {
           method: 'GET',
         });
 
