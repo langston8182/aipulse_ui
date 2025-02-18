@@ -17,6 +17,7 @@ import { Unsubscribe } from './pages/Unsubscribe';
 import { AuthCallback } from './pages/AuthCallback';
 import { Pagination } from './components/Pagination';
 import { redirectToLogin } from './services/auth';
+import { initAnalytics } from './services/analytics';
 import type { Article } from './types';
 import { getArticles } from './services/articles';
 
@@ -28,6 +29,9 @@ function App() {
   const articlesPerPage = 6;
 
   useEffect(() => {
+    // Initialise le suivi analytics
+    initAnalytics();
+
     const fetchArticles = async () => {
       try {
         const data = await getArticles();

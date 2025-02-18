@@ -4,3 +4,4 @@ export * from './email';
 export * from './parameters';
 export * from './openai';
 export * from './images';
+export * from './analytics';

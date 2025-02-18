@@ -46,3 +46,25 @@ export interface S3Image {
   lastModified?: string;
   size?: number;
 }
+
+export interface AnalyticsEvent {
+  eventType: 'pageView' | 'share' | 'click';
+  hashedIp: string;
+  timestamp: string;
+  page: string;
+  articleId?: string;
+  referrer?: string;
+  deviceType: 'mobile' | 'desktop' | 'tablet';
+  browser: string;
+  os: string;
+  country: string;
+  timeOnPage: number;
+  actions: {
+    shares: {
+      facebook: number;
+      linkedin: number;
+      x: number;
+    };
+    clicks: number;
+  };
+}
