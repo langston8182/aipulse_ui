@@ -157,7 +157,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
 export function initAnalytics(): void {
     try {
         // Démarre le suivi du temps sur la page
-        //PageTimer.start();
+        PageTimer.start();
 
         // Envoie un événement initial de vue de page
         void sendAnalyticsEvent({
@@ -184,7 +184,7 @@ export function initAnalytics(): void {
 
         // Nettoie lors de la fermeture de la page
         window.addEventListener('beforeunload', () => {
-            //PageTimer.stop();
+            PageTimer.stop();
 
             // Envoie un dernier événement avec les statistiques finales
             void sendAnalyticsEvent({
@@ -211,7 +211,7 @@ export function initAnalytics(): void {
 }
 
 export async function sendAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
-    if (!API_BASE_URL) {
+    /*if (!API_BASE_URL) {
         console.warn('API_BASE_URL is not defined. Analytics event not sent.');
         return;
     }
@@ -230,5 +230,5 @@ export async function sendAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
         }
     } catch (error) {
         console.error('Error sending analytics event:', error);
-    }
+    }*/
 }
