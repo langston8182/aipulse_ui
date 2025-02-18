@@ -9,8 +9,9 @@ phases:
       - npm install
   pre_build:
     commands:
-      - echo "Création du fichier .env avec VITE_API_BASE_URL"
-      - echo "VITE_API_BASE_URL=${API_URL}" > .env
+      - echo "Création du fichier .env"
+      - echo "VITE_API_BASE_URL=${API_URL}" >> .env
+      - echo "VITE_AWS_LOGIN_URL=${AWS_LOGIN_URL}" >> .env
       - cat .env
       - echo "Récupération des paramètres"
       - node scripts/getAwsParams.js

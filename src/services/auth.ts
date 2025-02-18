@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-const AWS_LOGIN_URL = 'https://auth.cyrilmarchive.com/login?client_id=6adlt0qa98ki88abf5bkt8oone&response_type=code&scope=email+openid+profile&redirect_uri=https%3A%2F%2Fwww.ai-pulse-news.com%2Fauth%2Fcallback';
+const AWS_LOGIN_URL = import.meta.env.VITE_AWS_LOGIN_URL
 
 interface UserInfo {
   given_name: string;
