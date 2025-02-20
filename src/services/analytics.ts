@@ -65,60 +65,6 @@ function getSessionId(): string {
     return sessionId;
 }
 
-// Suit le temps passé sur la page
-class PageTimer {
-    private static startTime: number = Date.now();
-    private static intervalId: number | null = null;
-    private static currentPage: string = window.location.pathname;
-
-    static start(): void {
-        this.startTime = Date.now();
-        this.currentPage = window.location.pathname;
-
-        // Réinitialise le timer si la page change
-        if (this.intervalId) {
-            window.clearInterval(this.intervalId);
-        }
-
-        // Envoie périodiquement des mises à jour du temps passé
-        this.intervalId = window.setInterval(() => {
-            const timeOnPage = Math.floor((Date.now() - this.startTime) / 1000);
-            void sendAnalyticsEvent({
-                eventType: 'pageView',
-                hashedIp: getSessionId(),
-                timestamp: new Date().toISOString(),
-                page: this.currentPage,
-                articleId: this.currentPage.startsWith('/article/') ? this.currentPage.split('/')[2] : undefined,
-                referrer: document.referrer || undefined,
-                deviceType: getDeviceType(),
-                browser: getBrowser(),
-                os: getOS(),
-                country: 'FR', // Sera déterminé côté backend
-                timeOnPage,
-                actions: {
-                    shares: {
-                        facebook: 0,
-                        linkedin: 0,
-                        x: 0
-                    },
-                    clicks: 0
-                }
-            });
-        }, 30000); // Envoie toutes les 30 secondes
-    }
-
-    static stop(): void {
-        if (this.intervalId) {
-            window.clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
-    }
-
-    static getTimeOnPage(): number {
-        return Math.floor((Date.now() - this.startTime) / 1000);
-    }
-}
-
 // Suit les clics sur la page
 let clickCount = 0;
 document.addEventListener('click', () => {
@@ -145,8 +91,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
         deviceType: getDeviceType(),
         browser: getBrowser(),
         os: getOS(),
-        country: 'FR', // Sera déterminé côté backend
-        timeOnPage: PageTimer.getTimeOnPage(),
+        country: 'FR',
         actions: {
             shares: { ...socialShares },
             clicks: clickCount
@@ -156,9 +101,6 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
 
 export function initAnalytics(): void {
     try {
-        // Démarre le suivi du temps sur la page
-        PageTimer.start();
-
         // Envoie un événement initial de vue de page
         void sendAnalyticsEvent({
             eventType: 'pageView',
@@ -170,8 +112,7 @@ export function initAnalytics(): void {
             deviceType: getDeviceType(),
             browser: getBrowser(),
             os: getOS(),
-            country: 'FR', // Sera déterminé côté backend
-            timeOnPage: 0,
+            country: 'FR',
             actions: {
                 shares: {
                     facebook: 0,
@@ -182,11 +123,8 @@ export function initAnalytics(): void {
             }
         });
 
-        // Nettoie lors de la fermeture de la page
+        // Envoie un dernier événement avant de quitter la page
         window.addEventListener('beforeunload', () => {
-            PageTimer.stop();
-
-            // Envoie un dernier événement avec les statistiques finales
             void sendAnalyticsEvent({
                 eventType: 'pageView',
                 hashedIp: getSessionId(),
@@ -197,8 +135,7 @@ export function initAnalytics(): void {
                 deviceType: getDeviceType(),
                 browser: getBrowser(),
                 os: getOS(),
-                country: 'FR', // Sera déterminé côté backend
-                timeOnPage: PageTimer.getTimeOnPage(),
+                country: 'FR',
                 actions: {
                     shares: { ...socialShares },
                     clicks: clickCount
@@ -211,7 +148,7 @@ export function initAnalytics(): void {
 }
 
 export async function sendAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
-    /*if (!API_BASE_URL) {
+    if (!API_BASE_URL) {
         console.warn('API_BASE_URL is not defined. Analytics event not sent.');
         return;
     }
@@ -230,5 +167,5 @@ export async function sendAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
         }
     } catch (error) {
         console.error('Error sending analytics event:', error);
-    }*/
+    }
 }

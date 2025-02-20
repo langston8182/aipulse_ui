@@ -58,7 +58,6 @@ export interface AnalyticsEvent {
   browser: string;
   os: string;
   country: string;
-  timeOnPage: number;
   actions: {
     shares: {
       facebook: number;
