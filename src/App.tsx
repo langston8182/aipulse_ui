@@ -18,6 +18,7 @@ import { AuthCallback } from './pages/AuthCallback';
 import { Pagination } from './components/Pagination';
 import { redirectToLogin } from './services/auth';
 import { initAnalytics } from './services/analytics';
+import { extractIdFromSlug } from './utils/slug';
 import type { Article } from './types';
 import { getArticles } from './services/articles';
 
@@ -52,7 +53,6 @@ function App() {
   const path = window.location.pathname;
   const searchParams = new URLSearchParams(window.location.search);
   const query = searchParams.get('q');
-  const articleId = searchParams.get('id');
 
   // Redirection vers AWS Login si on accède à /admin
   useEffect(() => {
@@ -68,6 +68,7 @@ function App() {
       return <ProtectedRoute><AdminArticles /></ProtectedRoute>;
     }
     if (path === '/admin/articles/edit') {
+      const articleId = searchParams.get('id');
       return <ProtectedRoute><EditArticle articleId={articleId} /></ProtectedRoute>;
     }
     if (path === '/admin/media') {
@@ -90,8 +91,9 @@ function App() {
   }
 
   // Public routes
-  if (path.startsWith('/article/')) {
-    const articleId = path.split('/')[2];
+  if (path.startsWith('/articles/')) {
+    const slug = path.split('/')[2];
+    const articleId = extractIdFromSlug(slug);
     return <ArticleDetail articleId={articleId} />;
   }
 
@@ -182,4 +184,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock, ArrowRight } from 'lucide-react';
 import type { Article } from '../types';
+import { slugify } from '../utils/slug';
 
 interface ArticleCardProps {
   article: Article;
@@ -8,7 +9,8 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article }: ArticleCardProps) {
   const handleReadMore = () => {
-    window.location.href = `/article/${article._id}`;
+    const slug = `${slugify(article.title)}-${article._id}`;
+    window.location.href = `/articles/${slug}`;
   };
 
   return (
