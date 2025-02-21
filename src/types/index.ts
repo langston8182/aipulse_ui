@@ -74,7 +74,7 @@ export interface AnalyticsData {
   totalShares: {
     facebook: number;
     linkedin: number;
-    twitter: number;
+    x: number;
     total: number;
   };
   distinctCountries: number;
@@ -82,5 +82,9 @@ export interface AnalyticsData {
   top5Articles: Array<{
     count: number;
     articleId: string;
+  }>;
+  dailyUniqueVisits: Array<{
+    date: string;
+    uniqueCount: number;
   }>;
 }

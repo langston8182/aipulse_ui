@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { AdminHeader } from '../components/AdminHeader';
 import { AnalyticCard } from '../components/analytics/AnalyticCard';
+import { LineChart } from '../components/analytics/LineChart';
 import { TopArticles } from '../components/analytics/TopArticles';
 import { Users, Eye, Share2, Globe } from 'lucide-react';
 import { getAnalytics } from '../services/analytics';
 import { getArticle } from '../services/articles';
-import type { AnalyticsData, Article } from '../types';
+import type { AnalyticsData } from '../types';
 
 export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -121,6 +122,18 @@ export default function AdminDashboard() {
                 title="Pays Distincts"
                 value={analytics.distinctCountries.toLocaleString()}
                 icon={<Globe className="h-6 w-6 text-indigo-600" />}
+            />
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-1 gap-6 mb-8">
+            <LineChart
+                data={analytics.dailyUniqueVisits.map(visit => ({
+                  date: visit.date,
+                  value: visit.uniqueCount
+                }))}
+                title="Visiteurs Uniques par Jour"
+                color="#4F46E5"
             />
           </div>
 
