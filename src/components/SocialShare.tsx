@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Share2, Link2, Check } from 'lucide-react';
-import { trackSocialShare } from '../services/analytics';
 
 interface SocialShareProps {
   url: string;
@@ -21,7 +20,6 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
 
   const handleShare = (platform: 'facebook' | 'linkedin' | 'x') => {
     window.open(shareLinks[platform], '_blank');
-    trackSocialShare(platform);
   };
 
   const copyToClipboard = async () => {
@@ -35,12 +33,12 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
   };
 
   return (
-      <div className="flex items-center space-x-2">
-      <span className="flex items-center text-gray-500 text-sm">
+      <div className="flex items-center gap-2 flex-wrap">
+      <span className="flex items-center text-gray-500 text-sm whitespace-nowrap">
         <Share2 className="h-4 w-4 mr-1" />
         Partager :
       </span>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center gap-1">
           <button
               onClick={() => handleShare('facebook')}
               className="p-2 text-[#1877F2] hover:bg-blue-50 rounded-full transition-colors duration-200"
@@ -78,7 +76,7 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
             </button>
             {copied && (
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full pl-2">
-                  <div className="flex items-center space-x-1 text-green-600 text-sm bg-white px-2 py-1 rounded-md shadow-sm">
+                  <div className="flex items-center space-x-1 text-green-600 text-sm bg-white px-2 py-1 rounded-md shadow-sm whitespace-nowrap">
                     <Check className="h-3 w-3" />
                     <span>Copié</span>
                   </div>
