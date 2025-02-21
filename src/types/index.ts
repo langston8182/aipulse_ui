@@ -67,3 +67,20 @@ export interface AnalyticsEvent {
     clicks: number;
   };
 }
+
+export interface AnalyticsData {
+  totalVisitors: number;
+  totalArticlesSeen: number;
+  totalShares: {
+    facebook: number;
+    linkedin: number;
+    twitter: number;
+    total: number;
+  };
+  distinctCountries: number;
+  uniqueVisitorsLast30Days: number;
+  top5Articles: Array<{
+    count: number;
+    articleId: string;
+  }>;
+}

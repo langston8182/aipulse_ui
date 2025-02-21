@@ -1,4 +1,4 @@
-import type { AnalyticsEvent } from '../types';
+import type { AnalyticsEvent, AnalyticsData } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -167,5 +167,30 @@ export async function sendAnalyticsEvent(event: AnalyticsEvent): Promise<void> {
         }
     } catch (error) {
         console.error('Error sending analytics event:', error);
+    }
+}
+
+export async function getAnalytics(): Promise<AnalyticsData> {
+    if (!API_BASE_URL) {
+        throw new Error('API_BASE_URL is not defined');
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/analytics`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching analytics:', error);
+        throw error;
     }
 }

@@ -1,124 +1,134 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AdminHeader } from '../components/AdminHeader';
 import { AnalyticCard } from '../components/analytics/AnalyticCard';
-import { LineChart } from '../components/analytics/LineChart';
 import { TopArticles } from '../components/analytics/TopArticles';
-import { Users, Eye, Share2, Search, Globe, Clock } from 'lucide-react';
-
-// Mock analytics data
-const visitsData = Array.from({ length: 30 }, (_, i) => ({
-  date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString(),
-  value: Math.floor(Math.random() * 1000) + 500
-}));
-
-const searchImpressions = Array.from({ length: 30 }, (_, i) => ({
-  date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString(),
-  value: Math.floor(Math.random() * 500) + 200
-}));
-
-const topArticles = [
-  {
-    id: '1',
-    title: 'The Future of Large Language Models: Beyond GPT-4',
-    views: 12500,
-    change: 23
-  },
-  {
-    id: '2',
-    title: "Quantum Computing's Impact on AI: A New Frontier",
-    views: 8900,
-    change: 15
-  },
-  {
-    id: '3',
-    title: 'Ethical Considerations in AI Development',
-    views: 7200,
-    change: -5
-  },
-  {
-    id: '4',
-    title: 'Neural Networks in Computer Vision: 2024 Advances',
-    views: 6800,
-    change: 8
-  },
-  {
-    id: '5',
-    title: 'AI in Healthcare: Revolutionizing Medical Diagnosis',
-    views: 5900,
-    change: 12
-  }
-];
+import { Users, Eye, Share2, Globe } from 'lucide-react';
+import { getAnalytics } from '../services/analytics';
+import { getArticle } from '../services/articles';
+import type { AnalyticsData, Article } from '../types';
 
 export default function AdminDashboard() {
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [topArticles, setTopArticles] = useState<Array<{
+    id: string;
+    title: string;
+    views: number;
+    change: number;
+  }>>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAnalytics();
+        setAnalytics(data);
+
+        // Fetch article details for top 5 articles
+        const articlesDetails = await Promise.all(
+            data.top5Articles.map(async (article) => {
+              try {
+                const details = await getArticle(article.articleId);
+                return {
+                  id: article.articleId,
+                  title: details.title,
+                  views: article.count,
+                  change: 0 // Nous n'avons pas cette donnée pour le moment
+                };
+              } catch (error) {
+                console.error(`Error fetching article ${article.articleId}:`, error);
+                return {
+                  id: article.articleId,
+                  title: 'Article non trouvé',
+                  views: article.count,
+                  change: 0
+                };
+              }
+            })
+        );
+
+        setTopArticles(articlesDetails);
+        setLoading(false);
+      } catch (error) {
+        setError((error as Error).message);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+        <div className="min-h-screen bg-gray-100">
+          <AdminHeader />
+          <main className="container mx-auto px-4 py-8">
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+          </main>
+        </div>
+    );
+  }
+
+  if (error || !analytics) {
+    return (
+        <div className="min-h-screen bg-gray-100">
+          <AdminHeader />
+          <main className="container mx-auto px-4 py-8">
+            <div className="text-center">
+              <p className="text-red-600">Erreur : {error || 'Impossible de charger les analytics'}</p>
+              <button
+                  onClick={() => window.location.reload()}
+                  className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Réessayer
+              </button>
+            </div>
+          </main>
+        </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <AdminHeader />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Analytics overview of your AI Pulse News platform</p>
-        </div>
+      <div className="min-h-screen bg-gray-100">
+        <AdminHeader />
 
-        {/* Analytics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <AnalyticCard
-            title="Total Visitors"
-            value="25.4K"
-            change={12}
-            icon={<Users className="h-6 w-6 text-indigo-600" />}
-          />
-          <AnalyticCard
-            title="Page Views"
-            value="98.2K"
-            change={8}
-            icon={<Eye className="h-6 w-6 text-indigo-600" />}
-          />
-          <AnalyticCard
-            title="Social Shares"
-            value="3.2K"
-            change={-3}
-            icon={<Share2 className="h-6 w-6 text-indigo-600" />}
-          />
-          <AnalyticCard
-            title="Search Impressions"
-            value="45.8K"
-            change={15}
-            icon={<Search className="h-6 w-6 text-indigo-600" />}
-          />
-          <AnalyticCard
-            title="Avg. Time on Site"
-            value="4:32"
-            change={5}
-            icon={<Clock className="h-6 w-6 text-indigo-600" />}
-          />
-          <AnalyticCard
-            title="Global Reach"
-            value="82 countries"
-            change={3}
-            icon={<Globe className="h-6 w-6 text-indigo-600" />}
-          />
-        </div>
+        <main className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600">Vue d'ensemble des analytics de votre plateforme</p>
+          </div>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <LineChart
-            data={visitsData}
-            title="Daily Visitors (Last 30 Days)"
-            color="#4F46E5"
-          />
-          <LineChart
-            data={searchImpressions}
-            title="Search Impressions (Last 30 Days)"
-            color="#059669"
-          />
-        </div>
+          {/* Analytics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <AnalyticCard
+                title="Visiteurs Totaux"
+                value={analytics.totalVisitors.toLocaleString()}
+                icon={<Users className="h-6 w-6 text-indigo-600" />}
+            />
+            <AnalyticCard
+                title="Articles Vus"
+                value={analytics.totalArticlesSeen.toLocaleString()}
+                icon={<Eye className="h-6 w-6 text-indigo-600" />}
+            />
+            <AnalyticCard
+                title="Partages Sociaux"
+                value={analytics.totalShares.total.toLocaleString()}
+                icon={<Share2 className="h-6 w-6 text-indigo-600" />}
+            />
+            <AnalyticCard
+                title="Pays Distincts"
+                value={analytics.distinctCountries.toLocaleString()}
+                icon={<Globe className="h-6 w-6 text-indigo-600" />}
+            />
+          </div>
 
-        {/* Top Articles */}
-        <div className="grid grid-cols-1 gap-6">
-          <TopArticles articles={topArticles} />
-        </div>
-      </main>
-    </div>
+          {/* Top Articles */}
+          <div className="grid grid-cols-1 gap-6">
+            <TopArticles articles={topArticles} />
+          </div>
+        </main>
+      </div>
   );
 }
