@@ -65,10 +65,22 @@ function getSessionId(): string {
     return sessionId;
 }
 
+// Vérifie si nous sommes sur une page d'article
+function isArticlePage(): boolean {
+    return window.location.pathname.startsWith('/article/');
+}
+
+// Vérifie si nous sommes dans la partie admin
+function isAdminPage(): boolean {
+    return window.location.pathname.startsWith('/admin');
+}
+
 // Suit les clics sur la page
 let clickCount = 0;
 document.addEventListener('click', () => {
-    clickCount++;
+    if (isArticlePage()) {
+        clickCount++;
+    }
 });
 
 // Suit les partages sociaux
@@ -79,6 +91,8 @@ const socialShares = {
 };
 
 export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void {
+    if (!isArticlePage() || isAdminPage()) return;
+
     socialShares[platform]++;
 
     void sendAnalyticsEvent({
@@ -86,7 +100,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
         hashedIp: getSessionId(),
         timestamp: new Date().toISOString(),
         page: window.location.pathname,
-        articleId: window.location.pathname.startsWith('/article/') ? window.location.pathname.split('/')[2] : undefined,
+        articleId: window.location.pathname.split('/')[2],
         referrer: document.referrer || undefined,
         deviceType: getDeviceType(),
         browser: getBrowser(),
@@ -101,13 +115,16 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
 
 export function initAnalytics(): void {
     try {
+        // N'initialise les analytics que sur les pages d'articles
+        if (!isArticlePage() || isAdminPage()) return;
+
         // Envoie un événement initial de vue de page
         void sendAnalyticsEvent({
             eventType: 'pageView',
             hashedIp: getSessionId(),
             timestamp: new Date().toISOString(),
             page: window.location.pathname,
-            articleId: window.location.pathname.startsWith('/article/') ? window.location.pathname.split('/')[2] : undefined,
+            articleId: window.location.pathname.split('/')[2],
             referrer: document.referrer || undefined,
             deviceType: getDeviceType(),
             browser: getBrowser(),
@@ -125,12 +142,14 @@ export function initAnalytics(): void {
 
         // Envoie un dernier événement avant de quitter la page
         window.addEventListener('beforeunload', () => {
+            if (!isArticlePage() || isAdminPage()) return;
+
             void sendAnalyticsEvent({
                 eventType: 'pageView',
                 hashedIp: getSessionId(),
                 timestamp: new Date().toISOString(),
                 page: window.location.pathname,
-                articleId: window.location.pathname.startsWith('/article/') ? window.location.pathname.split('/')[2] : undefined,
+                articleId: window.location.pathname.split('/')[2],
                 referrer: document.referrer || undefined,
                 deviceType: getDeviceType(),
                 browser: getBrowser(),
