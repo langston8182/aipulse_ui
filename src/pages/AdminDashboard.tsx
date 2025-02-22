@@ -29,6 +29,7 @@ export default function AdminDashboard() {
         const articlesDetails = await Promise.all(
             data.top5Articles.map(async (article) => {
               try {
+                console.log('article : ', article.articleId)
                 const details = await getArticle(article.articleId);
                 return {
                   id: article.articleId,

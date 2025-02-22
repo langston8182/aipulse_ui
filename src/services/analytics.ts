@@ -1,5 +1,6 @@
 import type { AnalyticsEvent, AnalyticsData } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { extractIdFromSlug } from '../utils/slug';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -75,6 +76,14 @@ function isAdminPage(): boolean {
     return window.location.pathname.startsWith('/admin');
 }
 
+// Extrait l'ID de l'article de l'URL
+function getArticleId(): string | undefined {
+    if (!isArticlePage()) return undefined;
+
+    const slug = window.location.pathname.split('/')[2];
+    return extractIdFromSlug(slug);
+}
+
 // Suit les clics sur la page
 let clickCount = 0;
 document.addEventListener('click', () => {
@@ -100,7 +109,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
         hashedIp: getSessionId(),
         timestamp: new Date().toISOString(),
         page: window.location.pathname,
-        articleId: window.location.pathname.split('/')[2],
+        articleId: getArticleId(),
         referrer: document.referrer || undefined,
         deviceType: getDeviceType(),
         browser: getBrowser(),
@@ -124,7 +133,7 @@ export function initAnalytics(): void {
             hashedIp: getSessionId(),
             timestamp: new Date().toISOString(),
             page: window.location.pathname,
-            articleId: window.location.pathname.split('/')[2],
+            articleId: getArticleId(),
             referrer: document.referrer || undefined,
             deviceType: getDeviceType(),
             browser: getBrowser(),
@@ -149,7 +158,7 @@ export function initAnalytics(): void {
                 hashedIp: getSessionId(),
                 timestamp: new Date().toISOString(),
                 page: window.location.pathname,
-                articleId: window.location.pathname.split('/')[2],
+                articleId: getArticleId(),
                 referrer: document.referrer || undefined,
                 deviceType: getDeviceType(),
                 browser: getBrowser(),
