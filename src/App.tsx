@@ -91,7 +91,7 @@ function App() {
   }
 
   // Public routes
-  if (path.startsWith('/articles/')) {
+  if (path.startsWith('/article/')) {
     const slug = path.split('/')[2];
     const articleId = extractIdFromSlug(slug);
     return <ArticleDetail articleId={articleId} />;

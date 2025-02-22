@@ -10,7 +10,7 @@ interface FeaturedArticleProps {
 export function FeaturedArticle({ article }: FeaturedArticleProps) {
   const handleReadArticle = () => {
     const slug = `${slugify(article.title)}-${article._id}`;
-    window.location.href = `/articles/${slug}`;
+    window.location.href = `/article/${slug}`;
   };
 
   const formatDate = (dateString: string) => {

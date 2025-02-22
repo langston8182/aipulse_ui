@@ -10,7 +10,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article }: ArticleCardProps) {
   const handleReadMore = () => {
     const slug = `${slugify(article.title)}-${article._id}`;
-    window.location.href = `/articles/${slug}`;
+    window.location.href = `/article/${slug}`;
   };
 
   return (
