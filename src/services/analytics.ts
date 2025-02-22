@@ -1,5 +1,6 @@
 import type { AnalyticsEvent, AnalyticsData } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { extractIdFromSlug } from '../utils/slug';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -75,6 +76,19 @@ function isAdminPage(): boolean {
     return window.location.pathname.startsWith('/admin');
 }
 
+// Vérifie si nous sommes sur la page d'accueil
+function isHomePage(): boolean {
+    return window.location.pathname === '/' || window.location.pathname === '/index.html';
+}
+
+// Extrait l'ID de l'article de l'URL
+function getArticleId(): string | undefined {
+    if (!isArticlePage()) return undefined;
+
+    const slug = window.location.pathname.split('/')[2];
+    return extractIdFromSlug(slug);
+}
+
 // Suit les clics sur la page
 let clickCount = 0;
 document.addEventListener('click', () => {
@@ -91,7 +105,7 @@ const socialShares = {
 };
 
 export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void {
-    if (!isArticlePage() || isAdminPage()) return;
+    if (!isArticlePage() || isAdminPage() || isHomePage()) return;
 
     socialShares[platform]++;
 
@@ -100,7 +114,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
         hashedIp: getSessionId(),
         timestamp: new Date().toISOString(),
         page: window.location.pathname,
-        articleId: window.location.pathname.split('/')[2],
+        articleId: getArticleId(),
         referrer: document.referrer || undefined,
         deviceType: getDeviceType(),
         browser: getBrowser(),
@@ -116,7 +130,7 @@ export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void 
 export function initAnalytics(): void {
     try {
         // N'initialise les analytics que sur les pages d'articles
-        if (!isArticlePage() || isAdminPage()) return;
+        if (!isArticlePage() || isAdminPage() || isHomePage()) return;
 
         // Envoie un événement initial de vue de page
         void sendAnalyticsEvent({
@@ -124,7 +138,7 @@ export function initAnalytics(): void {
             hashedIp: getSessionId(),
             timestamp: new Date().toISOString(),
             page: window.location.pathname,
-            articleId: window.location.pathname.split('/')[2],
+            articleId: getArticleId(),
             referrer: document.referrer || undefined,
             deviceType: getDeviceType(),
             browser: getBrowser(),
@@ -142,14 +156,14 @@ export function initAnalytics(): void {
 
         // Envoie un dernier événement avant de quitter la page
         window.addEventListener('beforeunload', () => {
-            if (!isArticlePage() || isAdminPage()) return;
+            if (!isArticlePage() || isAdminPage() || isHomePage()) return;
 
             void sendAnalyticsEvent({
                 eventType: 'pageView',
                 hashedIp: getSessionId(),
                 timestamp: new Date().toISOString(),
                 page: window.location.pathname,
-                articleId: window.location.pathname.split('/')[2],
+                articleId: getArticleId(),
                 referrer: document.referrer || undefined,
                 deviceType: getDeviceType(),
                 browser: getBrowser(),
