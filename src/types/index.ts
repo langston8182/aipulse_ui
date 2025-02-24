@@ -88,3 +88,11 @@ export interface AnalyticsData {
     uniqueCount: number;
   }>;
 }
+
+export interface Subscriber {
+  _id: string;
+  email: string;
+  status: 'PENDING' | 'CONFIRMED';
+  token: string;
+  created_at: string;
+}

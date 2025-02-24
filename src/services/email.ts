@@ -35,7 +35,7 @@ export async function sendNewArticleNotification(article: Article): Promise<void
       
       // Ensure subscribers is an array of subscriber objects
       const validSubscribers = subscribers
-        .filter(subscriber => subscriber && typeof subscriber === 'object' && subscriber.email && subscriber.token);
+        .filter(subscriber => subscriber && typeof subscriber === 'object' && subscriber.email && subscriber.confirm_token);
       
       // Send individual emails to each subscriber
       for (const subscriber of validSubscribers) {
@@ -84,7 +84,7 @@ export async function sendNewArticleNotification(article: Article): Promise<void
                 <p style="color: #6B7280; font-size: 14px; margin-bottom: 12px;">
                   Vous recevez cet email car vous êtes abonné à la newsletter de ${config.siteTitle}.
                 </p>
-                <a href="${API_BASE_URL}/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${encodeURIComponent(subscriber.token)}" 
+                <a href="${API_BASE_URL}/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${encodeURIComponent(subscriber.confirm_token)}" 
                    style="color: #6B7280; font-size: 14px; text-decoration: underline;">
                   Se désabonner de la newsletter
                 </a>
