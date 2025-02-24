@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Share2, Link2, Check } from 'lucide-react';
+import { trackSocialShare } from '../services/analytics';
 
 interface SocialShareProps {
   url: string;
@@ -20,6 +21,7 @@ export function SocialShare({ url, title, summary }: SocialShareProps) {
 
   const handleShare = (platform: 'facebook' | 'linkedin' | 'x') => {
     window.open(shareLinks[platform], '_blank');
+    trackSocialShare(platform);
   };
 
   const copyToClipboard = async () => {

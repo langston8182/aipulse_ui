@@ -97,18 +97,23 @@ document.addEventListener('click', () => {
     }
 });
 
-// Suit les partages sociaux
-const socialShares = {
+const initialSocialShares = {
     facebook: 0,
     linkedin: 0,
     x: 0
 };
 
+let socialShares = { ...initialSocialShares };
+
 export function trackSocialShare(platform: 'facebook' | 'linkedin' | 'x'): void {
     if (!isArticlePage() || isAdminPage() || isHomePage()) return;
 
-    socialShares[platform]++;
+    // Réinitialiser socialShares à chaque appel
+    socialShares = { ...initialSocialShares };
 
+    // Mettre à jour la plateforme partagée
+    socialShares[platform] = 1;
+    
     void sendAnalyticsEvent({
         eventType: 'share',
         hashedIp: getSessionId(),
