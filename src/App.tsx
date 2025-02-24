@@ -14,6 +14,7 @@ import { Categories } from './pages/Categories';
 import { About } from './pages/About';
 import { SearchResults } from './pages/SearchResults';
 import { Unsubscribe } from './pages/Unsubscribe';
+import { NewsletterConfirm } from './pages/NewsletterConfirm';
 import { AuthCallback } from './pages/AuthCallback';
 import { Pagination } from './components/Pagination';
 import { redirectToLogin } from './services/auth';
@@ -113,6 +114,10 @@ function App() {
     return <Unsubscribe />;
   }
 
+  if (path === '/newsletter/confirm') {
+    return <NewsletterConfirm />;
+  }
+
   if (loading) {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -184,4 +189,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
