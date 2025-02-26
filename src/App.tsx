@@ -22,13 +22,14 @@ import { initAnalytics } from './services/analytics';
 import { extractIdFromSlug } from './utils/slug';
 import type { Article } from './types';
 import { getArticles } from './services/articles';
+import config from './config.json';
 
 function App() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const articlesPerPage = 6;
+  const articlesPerPage = config.articlesPerPage || 6;
 
   useEffect(() => {
     // Initialise le suivi analytics
