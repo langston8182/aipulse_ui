@@ -23,6 +23,7 @@ import { extractIdFromSlug } from './utils/slug';
 import type { Article } from './types';
 import { getArticles } from './services/articles';
 import config from './config.json';
+import { BrainCircuit, Sparkles } from 'lucide-react';
 
 function App() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -123,7 +124,10 @@ function App() {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-xl"></div>
+              <div className="relative animate-spin rounded-full h-12 w-12 border-2 border-primary-600 border-t-transparent"></div>
+            </div>
             <p className="mt-4 text-gray-600">Chargement des articles...</p>
           </div>
         </div>
@@ -133,11 +137,16 @@ function App() {
   if (error) {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600">Erreur : {error}</p>
+          <div className="text-center bg-white p-8 rounded-xl shadow-sm max-w-md">
+            <div className="text-red-500 mb-4">
+              <svg className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <p className="text-red-600 font-medium mb-4">Erreur : {error}</p>
             <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-full hover:from-primary-700 hover:to-primary-600 transition-colors duration-200 shadow-sm"
             >
               Réessayer
             </button>
@@ -157,14 +166,34 @@ function App() {
         <Header />
 
         <main className="container mx-auto px-4 py-8">
+          {/* Hero section with featured article */}
           {articles.length > 0 && (
               <section className="mb-12">
+                <div className="flex items-center mb-6">
+                  <div className="mr-3 relative">
+                    <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-lg"></div>
+                    <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2 rounded-full">
+                      <Sparkles className="h-5 w-5 text-white" />
+                    </div>
+                  </div>
+                  <h1 className="text-2xl font-bold text-gray-900">À la une</h1>
+                </div>
                 <FeaturedArticle article={articles[0]} />
               </section>
           )}
 
+          {/* Latest articles section */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Derniers Articles</h2>
+            <div className="flex items-center mb-6">
+              <div className="mr-3 relative">
+                <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-lg"></div>
+                <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2 rounded-full">
+                  <BrainCircuit className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Derniers Articles</h2>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {currentArticles.map((article) => (
                   <ArticleCard key={article._id} article={article} />
@@ -181,8 +210,26 @@ function App() {
 
         <footer className="bg-white border-t mt-16">
           <div className="container mx-auto px-4 py-8">
-            <div className="text-center text-gray-600">
-              <p>© 2024 AI Pulse News. Tous droits réservés.</p>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+              <div className="flex items-center mb-4 md:mb-0">
+                <div className="relative mr-3">
+                  <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-lg"></div>
+                  <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2 rounded-full">
+                    <BrainCircuit className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500">{config.siteTitle}</span>
+              </div>
+              <div className="flex space-x-6">
+                <a href="/" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">Accueil</a>
+                <a href="/categories" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">Catégories</a>
+                <a href="/about" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">À propos</a>
+              </div>
+            </div>
+            <div className="border-t border-gray-100 pt-6">
+              <div className="text-center text-gray-500 text-sm">
+                <p>© 2024 {config.siteTitle}. Tous droits réservés.</p>
+              </div>
             </div>
           </div>
         </footer>

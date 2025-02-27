@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
-import { Clock, ArrowLeft } from 'lucide-react';
+import { Clock, ArrowLeft, Calendar, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { SocialShare } from '../components/SocialShare';
 import type { Article } from '../types';
@@ -15,6 +15,7 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -39,8 +40,11 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
   if (loading) {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-xl"></div>
+              <div className="relative animate-spin rounded-full h-12 w-12 border-2 border-primary-600 border-t-transparent"></div>
+            </div>
             <p className="mt-4 text-gray-600">Chargement de l'article...</p>
           </div>
         </div>
@@ -50,11 +54,16 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
   if (error || !article) {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600">Erreur : {error || 'Article non trouvé'}</p>
+          <div className="text-center bg-white p-8 rounded-xl shadow-sm max-w-md">
+            <div className="text-red-500 mb-4">
+              <svg className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <p className="text-red-600 font-medium mb-4">Erreur : {error || 'Article non trouvé'}</p>
             <button
                 onClick={handleBack}
-                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-full hover:from-primary-700 hover:to-primary-600 transition-colors duration-200 shadow-sm"
             >
               Retour
             </button>
@@ -114,58 +123,68 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
         <main className="container mx-auto px-4 py-8">
           <button
               onClick={handleBack}
-              className="flex items-center space-x-2 text-indigo-600 hover:text-indigo-700 mb-8"
+              className="flex items-center space-x-2 text-primary-600 hover:text-primary-700 mb-8 group"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 transform group-hover:-translate-x-1 transition-transform duration-200" />
             <span>Retour aux articles</span>
           </button>
 
-          <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="relative w-full">
-              <div className="aspect-[16/9] md:aspect-[21/9]">
-                <img
-                    src={article.imageUrl}
-                    alt={article.title}
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                />
-              </div>
-              <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 text-sm font-semibold text-white bg-indigo-600 rounded-full">
+          <article className="max-w-4xl mx-auto">
+            {/* Article header */}
+            <div className="mb-8">
+              <div className="inline-block px-3 py-1 text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-500 rounded-full shadow-sm mb-4">
                 {article.category}
-              </span>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                {article.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-2 text-primary-500" />
+                  <span>Par {article.author}</span>
+                </div>
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2 text-primary-500" />
+                  <time dateTime={article.publishedAt}>
+                    {new Date(article.publishedAt).toLocaleDateString('fr-FR')}
+                  </time>
+                </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-2 text-primary-500" />
+                  <span>{article.readTime} min de lecture</span>
+                </div>
+              </div>
+              <div className="flex justify-start md:justify-end mb-6">
+                <SocialShare
+                    url={articleUrl}
+                    title={article.title}
+                    summary={article.summary}
+                />
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 md:p-8">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span>{article.readTime} min de lecture</span>
-                  </div>
-                  <span className="hidden sm:inline">•</span>
-                  <time dateTime={article.publishedAt} className="whitespace-nowrap">
-                    {new Date(article.publishedAt).toLocaleDateString('fr-FR')}
-                  </time>
-                  <span className="hidden sm:inline">•</span>
-                  <span className="whitespace-nowrap">Par {article.author}</span>
-                </div>
-                <div className="flex justify-start sm:justify-end">
-                  <SocialShare
-                      url={articleUrl}
-                      title={article.title}
-                      summary={article.summary}
-                  />
-                </div>
+            {/* Featured image with skeleton loader */}
+            <div className="relative w-full mb-8 bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="aspect-[21/9] relative">
+                {!isImageLoaded && (
+                    <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
+                )}
+                <img
+                    src={article.imageUrl}
+                    alt={article.title}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onLoad={() => setIsImageLoaded(true)}
+                    loading="eager"
+                />
               </div>
+            </div>
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                {article.title}
-              </h1>
-
-              <div className="prose prose-indigo max-w-none prose-img:rounded-xl prose-img:w-full prose-img:object-cover sm:prose-base md:prose-lg">
-                <ReactMarkdown>{article.content}</ReactMarkdown>
+            {/* Article content */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6 md:p-8">
+                <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+                  <ReactMarkdown>{article.content}</ReactMarkdown>
+                </div>
               </div>
             </div>
           </article>
@@ -173,8 +192,28 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
 
         <footer className="bg-white border-t mt-16">
           <div className="container mx-auto px-4 py-8">
-            <div className="text-center text-gray-600">
-              <p>© 2024 AI Pulse News. Tous droits réservés.</p>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+              <div className="flex items-center mb-4 md:mb-0">
+                <div className="relative mr-3">
+                  <div className="absolute inset-0 bg-primary-600/20 rounded-full blur-lg"></div>
+                  <div className="relative bg-gradient-to-br from-primary-600 to-accent-500 p-2 rounded-full">
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500">AI Pulse News</span>
+              </div>
+              <div className="flex space-x-6">
+                <a href="/" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">Accueil</a>
+                <a href="/categories" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">Catégories</a>
+                <a href="/about" className="text-gray-600 hover:text-primary-600 transition-colors duration-200">À propos</a>
+              </div>
+            </div>
+            <div className="border-t border-gray-100 pt-6">
+              <div className="text-center text-gray-500 text-sm">
+                <p>© 2024 AI Pulse News. Tous droits réservés.</p>
+              </div>
             </div>
           </div>
         </footer>
