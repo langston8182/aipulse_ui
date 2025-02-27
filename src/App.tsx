@@ -228,7 +228,7 @@ function App() {
             </div>
             <div className="border-t border-gray-100 pt-6">
               <div className="text-center text-gray-500 text-sm">
-                <p>© 2024 {config.siteTitle}. Tous droits réservés.</p>
+                <p>© 2025 {config.siteTitle}. Tous droits réservés.</p>
               </div>
             </div>
           </div>

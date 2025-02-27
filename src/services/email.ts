@@ -91,7 +91,7 @@ export async function sendNewArticleNotification(article: Article): Promise<void
               </div>
               
               <p style="color: #6B7280; font-size: 14px; text-align: center;">
-                © 2024 ${config.siteTitle}. Tous droits réservés.
+                © 2025 ${config.siteTitle}. Tous droits réservés.
               </p>
             </div>
           `,
@@ -113,7 +113,7 @@ Par ${article.author}
 Vous recevez cet email car vous êtes abonné à la newsletter de ${config.siteTitle}.
 Pour vous désabonner, visitez ce lien : ${API_BASE_URL}/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${encodeURIComponent(subscriber.token)}
 
-© 2024 ${config.siteTitle}. Tous droits réservés.
+© 2025 ${config.siteTitle}. Tous droits réservés.
           `
         };
 

@@ -11,6 +11,7 @@ export function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +39,10 @@ export function Header() {
       try {
         const data = await getArticles();
         setArticles(data);
+
+        // Extract unique categories from articles
+        const uniqueCategories = Array.from(new Set(data.map(article => article.category)));
+        setCategories(uniqueCategories);
       } catch (error) {
         console.error('Erreur lors de la récupération des articles:', error);
       }
@@ -71,7 +76,8 @@ export function Header() {
     setIsSearchFocused(false);
   };
 
-  const categories = config.categories.slice(0, 5);
+  // Get top 5 categories to display in dropdown
+  const topCategories = categories.slice(0, 5);
 
   return (
       <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white shadow-sm'}`}>
@@ -150,15 +156,21 @@ export function Header() {
                   </button>
                   <div className="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2 z-50">
                     <div className="py-2 bg-white rounded-xl shadow-soft border border-gray-100">
-                      {categories.map((category) => (
-                          <a
-                              key={category}
-                              href={`/categories?category=${encodeURIComponent(category)}`}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors duration-150"
-                          >
-                            {category}
-                          </a>
-                      ))}
+                      {topCategories.length > 0 ? (
+                          topCategories.map((category) => (
+                              <a
+                                  key={category}
+                                  href={`/categories?category=${encodeURIComponent(category)}`}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors duration-150"
+                              >
+                                {category}
+                              </a>
+                          ))
+                      ) : (
+                          <div className="px-4 py-2 text-sm text-gray-500">
+                            Chargement des catégories...
+                          </div>
+                      )}
                       <div className="border-t border-gray-100 my-1"></div>
                       <a
                           href="/categories"

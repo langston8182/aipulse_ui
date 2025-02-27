@@ -56,7 +56,7 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
               {article.title}
             </h2>
 
-            <p className="text-gray-600 mb-6 line-clamp-3">
+            <p className="text-gray-600 mb-6">
               {article.summary}
             </p>
 

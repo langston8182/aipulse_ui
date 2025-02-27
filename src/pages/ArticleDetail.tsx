@@ -212,7 +212,7 @@ export function ArticleDetail({ articleId }: ArticleDetailProps) {
             </div>
             <div className="border-t border-gray-100 pt-6">
               <div className="text-center text-gray-500 text-sm">
-                <p>© 2024 AI Pulse News. Tous droits réservés.</p>
+                <p>© 2025 AI Pulse News. Tous droits réservés.</p>
               </div>
             </div>
           </div>

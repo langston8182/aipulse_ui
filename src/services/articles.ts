@@ -44,11 +44,11 @@ export async function createArticle(article: ArticleFormData): Promise<Article> 
       },
       body: JSON.stringify(articleWithDate),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const createdArticle = await response.json();
 
     // Notify subscribers
@@ -63,18 +63,21 @@ export async function createArticle(article: ArticleFormData): Promise<Article> 
 
 export async function updateArticle(id: string, article: ArticleFormData): Promise<Article> {
   try {
-    const articleWithDate = {
+    // Get the existing article to preserve its publishedAt date
+    const existingArticle = await getArticle(id);
+
+    const updatedArticle = {
       ...article,
-      publishedAt: new Date().toISOString()
+      publishedAt: existingArticle.publishedAt // Preserve the original publication date
     };
-    
+
     const response = await fetch(`${API_BASE_URL}/articles/${id}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(articleWithDate),
+      body: JSON.stringify(updatedArticle),
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
