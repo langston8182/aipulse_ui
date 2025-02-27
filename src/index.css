@@ -90,3 +90,22 @@ p {
 ::-webkit-scrollbar-thumb:hover {
     background: #a0a0a0;
 }
+
+/* Animation pour l'expansion du résumé */
+@keyframes expandSummary {
+    from { max-height: 3rem; opacity: 0.8; }
+    to { max-height: 500px; opacity: 1; }
+}
+
+@keyframes collapseSummary {
+    from { max-height: 500px; opacity: 1; }
+    to { max-height: 3rem; opacity: 0.8; }
+}
+
+.summary-expand-enter {
+    animation: expandSummary 0.3s ease-out forwards;
+}
+
+.summary-expand-exit {
+    animation: collapseSummary 0.3s ease-in forwards;
+}

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Clock, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Clock, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Article } from '../types';
 import { slugify } from '../utils/slug';
 
@@ -8,9 +8,16 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const handleReadMore = () => {
     const slug = `${slugify(article.title)}-${article._id}`;
     window.location.href = `/article/${slug}`;
+  };
+
+  const toggleExpand = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
   };
 
   return (
@@ -55,9 +62,30 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {article.title}
           </h3>
 
-          <p className="text-gray-600 mb-4 line-clamp-2" itemProp="description">
-            {article.summary}
-          </p>
+          <div className="mb-4">
+            <div
+                className={`text-gray-600 overflow-hidden transition-all duration-300 ease-in-out ${
+                    isExpanded ? 'max-h-[500px]' : 'line-clamp-2'
+                }`}
+                itemProp="description"
+            >
+              {article.summary}
+            </div>
+
+            <button
+                onClick={toggleExpand}
+                className="mt-2 flex items-center text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200 group"
+                aria-expanded={isExpanded}
+                aria-controls="summary-content"
+            >
+              <span>{isExpanded ? 'Voir moins' : 'Voir plus'}</span>
+              {isExpanded ? (
+                  <ChevronUp className="h-3 w-3 ml-1 transform group-hover:-translate-y-0.5 transition-transform duration-200" />
+              ) : (
+                  <ChevronDown className="h-3 w-3 ml-1 transform group-hover:translate-y-0.5 transition-transform duration-200" />
+              )}
+            </button>
+          </div>
 
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="text-sm font-medium text-gray-900" itemProp="author">
