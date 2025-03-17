@@ -24,6 +24,8 @@ import type { Article } from './types';
 import { getArticles } from './services/articles';
 import config from './config.json';
 import { BrainCircuit, Sparkles } from 'lucide-react';
+import { HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 
 function App() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -162,6 +164,28 @@ function App() {
   const totalPages = Math.ceil((articles.length - 1) / articlesPerPage);
 
   return (
+      <HelmetProvider>
+        <Helmet>
+
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta name="description" content="AI Pulse News - Votre source d'actualités sur l'intelligence artificielle, le machine learning et les technologies émergentes." />
+            <meta name="keywords" content="AI, intelligence artificielle, machine learning, deep learning, actualités tech, IA" />
+            <meta name="author" content="AI Pulse News" />
+            <meta name="robots" content="index, follow" />
+
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://aipulsenews.com/" />
+            <meta property="og:title" content="AI Pulse News - Actualités IA" />
+            <meta property="og:description" content="Découvrez les dernières actualités et analyses sur l'intelligence artificielle et les technologies émergentes." />
+            <meta property="og:image" content="https://aipulsenews.com/og-image.jpg" />
+
+            <meta property="twitter:card" content="summary_large_image" />
+            <meta property="twitter:url" content="https://aipulsenews.com/" />
+            <meta property="twitter:title" content="AI Pulse News - Actualités IA" />
+            <meta property="twitter:description" content="Découvrez les dernières actualités et analyses sur l'intelligence artificielle et les technologies émergentes." />
+            <meta property="twitter:image" content="https://aipulsenews.com/og-image.jpg" />
+            <title>AI Pulse News - Actualités IA</title>
+        </Helmet>
       <div className="min-h-screen bg-gray-50">
         <Header />
 
@@ -234,6 +258,7 @@ function App() {
           </div>
         </footer>
       </div>
+      </HelmetProvider>
   );
 }
 

@@ -1,0 +1,16 @@
+# AI Pulse News Robots.txt
+User-agent: *
+Disallow: /admin/
+Disallow: /admin
+Disallow: /auth/
+Disallow: /auth
+
+# Allow all other pages
+Allow: /
+Allow: /article/
+Allow: /categories
+Allow: /about
+Allow: /search
+
+# Sitemap location
+Sitemap: https://www.ai-pulse-news.com/sitemap.xml
